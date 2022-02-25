@@ -40,28 +40,20 @@ void fCopy(char inputFile[], int copies)
     int c = chdir("./files");
     if (c != 0)
     {
-        return;
+        fprintf(stderr, "No folder to hold files");
+        exit(1);
     }
-    FILE *iFile = fopen(inputFile, "r");
-
-    char ch; // buffer
     char oName[100];
 
     for (int i = 0; i < copies; i++)
     {
-        int fileSuffix = rand() % copies; // Find random number in range 0 <-> copies
+        int fileSuffix = i; //append the copy number
 
         strcpy(oName, inputFile);
         strcat(oName, (char *)('0' + fileSuffix)); // output file name
 
-        FILE *oFile = fopen(oName, "w");
+        filesystem::copy_file(inputFile, oName);
 
-        while ((ch = fgetc(iFile)) != EOF)
-        {
-            fputc(ch, oFile);
-        }
-
-        fclose(oFile);
     }
 
     return;
