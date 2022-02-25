@@ -63,8 +63,6 @@ int main(int argc, char *argv[])
 
     char *fName[] = {argv[1]};
 
-    float brightness = atof(argv[2]);
-
     BMP iBMP = BMPRead(*fName);
 
     BYTE tempColor; // for scrolling through the colors
@@ -81,7 +79,8 @@ int main(int argc, char *argv[])
         }
     }*/
 
-    int c = chdir("./files");
+    chdir("./files");
+
     char oName[100] = "hellos.bmp";
 
     printf("success\n");
