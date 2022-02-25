@@ -65,9 +65,9 @@ int main(int argc, char *argv[])
 
     BMP iBMP = BMPRead(*fName);
 
-    BYTE tempColor; // for scrolling through the colors
+    /* BYTE tempColor; // for scrolling through the colors
 
-    /*for (int x = 0; x < oBMP.bih.biWidth; x++)
+    for (int x = 0; x < oBMP.bih.biWidth; x++)
     {
         for (int y = 0; y < oBMP.bih.biHeight; y++)
         {
