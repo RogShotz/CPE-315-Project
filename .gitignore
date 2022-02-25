@@ -34,3 +34,7 @@
 .gitignore
 .vscode/settings.json
 .vscode/launch.json
+
+# ETC
+files/
+main

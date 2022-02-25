@@ -4,6 +4,9 @@
 #include <string>
 #include <cstring>
 #include <fstream>
+#include <filesystem> // for file exists
+
+void fCopy(char inputFile[], int copies);
 
 using namespace std;
 
@@ -15,61 +18,51 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    string inputFile(argv[1]);
-
-    if (&inputFile == NULL)
+    if (!filesystem::exists(argv[1]))
     {
-        printf("Input file argument invalid.\n");
+        printf("File does not exist.\n");
         return 1;
     }
 
-    if (fopen(inputFile.c_str(), "r") == NULL)
+    char *inputFile[100] = {argv[1]};
+
+    if (!(atoi(argv[2]) >= 0))
     {
-        printf("Input file cannot be opened.\n");
+        printf("Not a valid copy amount.\n");
         return 1;
     }
 
-    int numCopies = atoi(argv[2]);
+    fCopy(*inputFile, atoi(argv[2]));
+}
 
-    if (&numCopies == NULL)
-    {
-        printf("Copy count argument invalid.\n");
-        return 1;
-    }
-
-    int c = chdir("files");
+void fCopy(char inputFile[], int copies)
+{
+    int c = chdir("./files");
     if (c != 0)
     {
-        return 1;
+        return;
     }
+    FILE *iFile = fopen(inputFile, "r");
 
-    for (int i = 0; i < numCopies; i++)
+    char ch; // buffer
+    char oName[100];
+
+    for (int i = 0; i < copies; i++)
     {
-        int fileSuffix = rand() % 100; // Find random number in range 0 <-> 99
+        int fileSuffix = rand() % copies; // Find random number in range 0 <-> copies
 
-        size_t t = inputFile.find_last_of(".");
-        string outputFile;
+        strcpy(oName, inputFile);
+        strcat(oName, (char *)('0' + fileSuffix)); // output file name
 
-        if (t == string::npos)
+        FILE *oFile = fopen(oName, "w");
+
+        while ((ch = fgetc(iFile)) != EOF)
         {
-            outputFile = inputFile + to_string(fileSuffix);
-        }
-        else
-        {
-            string stem = inputFile.substr(0, t);
-            string ext = inputFile.substr(t, inputFile.length());
-
-            outputFile = stem + to_string(fileSuffix) + ext;
+            fputc(ch, oFile);
         }
 
-        ifstream src(inputFile, ios::binary);
-        ofstream dst(outputFile, ios::binary);
-
-        dst << src.rdbuf();
-
+        fclose(oFile);
     }
-    
-    // 
 
-    return 0;
+    return;
 }
