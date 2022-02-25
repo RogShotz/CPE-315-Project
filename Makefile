@@ -1,5 +1,5 @@
 CC = g++
-CPPFLAGS = -wall -g
+CPPFLAGS = -Wall -g
 
 OBJS = main.o
 SRCS = main.cpp
