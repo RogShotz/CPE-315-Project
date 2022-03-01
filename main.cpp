@@ -44,7 +44,7 @@ struct BMP
 };
 
 BMP BMPRead(char fName[]); // for reading into file
-void BMPWrite(BMP bmp, char fName[]);
+void BMPWrite(BMP bmp, string fName);
 BYTE getColor(BMP bmp, int color, int x, int y); // get color at pixel, 1 = b, 2 = g, 3 = r
 
 int main(int argc, char *argv[])
@@ -55,40 +55,35 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    if (!filesystem::exists(argv[1]))
-    {
-        printf("\nFILE %s DOES NOT EXIST\n%s", argv[1], man);
-        return 0;
-    }
+    // bruh i cant get this to compile of well
+    // if (!filesystem::exists(argv[1]))
+    // {
+    //     printf("\nFILE %s DOES NOT EXIST\n%s", argv[1], man);
+    //     return 0;
+    // }
 
     char *fName[] = {argv[1]};
 
     BMP iBMP = BMPRead(*fName);
 
-    /* BYTE tempColor; // for scrolling through the colors
+    int success = chdir("./files");
 
-    for (int x = 0; x < oBMP.bih.biWidth; x++)
+    if (success != 0)
     {
-        for (int y = 0; y < oBMP.bih.biHeight; y++)
-        {
-            for (int i = 1; i < 4; i++)
-            {
-                tempColor = getColor(iBMP, i, x, y);
-                oBMP.idata[x * 3 + y * oBMP.trueWidth + i] = (BYTE)tempColor;
-            }
-        }
-    }*/
+        printf("Subdirectory 'files' not found. Terminating.\n");
+        return -1;
+    }
 
-    chdir("./files");
-
-    char oName[100] = "hellos.bmp";
-
-    printf("success\n");
-
-    BMPWrite(iBMP, oName);
+    for (int i = 0; i < atoi(argv[2]); i++)
+    {
+        string suffix = "output" + to_string(i) + ".bmp";
+        BMPWrite(iBMP, suffix);
+    }
 
     // dynamically de-allocate
     delete[] iBMP.idata;
+
+    printf("success\n");
 
     return 0;
 }
@@ -117,9 +112,9 @@ BMP BMPRead(char fName[])
     return bmp;
 }
 
-void BMPWrite(BMP bmp, char fName[])
+void BMPWrite(BMP bmp, string fName)
 {
-    FILE *file = fopen(fName, "wb");
+    FILE *file = fopen(fName.c_str(), "wb");
 
     fwrite(&bmp.bfh.bfType, sizeof(short), 1, file);
     fwrite(&bmp.bfh.bfSize, sizeof(int), 1, file);
@@ -130,6 +125,21 @@ void BMPWrite(BMP bmp, char fName[])
     fwrite(&bmp.bih, sizeof(bmp.bih), 1, file);
 
     fwrite(bmp.idata, bmp.bih.biSizeImage, 1, file);
+
+
+    BYTE tempColor; // for scrolling through the colors
+
+    for (int x = 0; x < bmp.bih.biWidth; x++)
+    {
+        for (int y = 0; y < bmp.bih.biHeight; y++)
+        {
+            for (int i = 1; i < 4; i++)
+            {
+                tempColor = getColor(bmp, i, x, y);
+                bmp.idata[x * 3 + y * bmp.trueWidth + i] = (BYTE)tempColor;
+            }
+        }
+    }
 
     fclose(file);
 }
