@@ -1,0 +1,5 @@
+./running.sh: line 24:  1631 Segmentation fault      ./copystorm $f $COPIES
+
+real	0m0.011s
+user	0m0.003s
+sys	0m0.000s
